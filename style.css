@@ -1,1 +1,253 @@
+/* Remove espaçamentos padrões e facilita o controle de largura/altura */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+/* Variáveis globais para facilitar futuras alterações de cores */
+:root {
+  --bg-dark: #06111f;
+  --bg-card: #ffffff;
+  --primary: #2f80ed;
+  --primary-dark: #1d5fbf;
+  --success: #15a36d;
+  --danger: #d93025;
+  --text-dark: #172033;
+  --text-muted: #667085;
+  --border: #d7deea;
+  --soft-bg: #f4f7fb;
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+}
+
+/* Corpo da página */
+body {
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(47, 128, 237, 0.30), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(21, 163, 109, 0.22), transparent 28%),
+    linear-gradient(135deg, #020711, var(--bg-dark));
+  color: #ffffff;
+}
+
+/* Container principal da página */
+.page {
+  width: min(1120px, 92%);
+  min-height: 100vh;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 460px;
+  align-items: center;
+  gap: 56px;
+  padding: 48px 0;
+}
+
+/* Bloco de apresentação */
+.hero {
+  max-width: 560px;
+}
+
+/* Etiqueta pequena acima do título */
+.hero__tag {
+  display: inline-block;
+  margin-bottom: 18px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: #c9d8ff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Título principal */
+.hero h1 {
+  margin-bottom: 20px;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -2px;
+}
+
+/* Texto de apresentação */
+.hero p {
+  color: #c6cfdd;
+  font-size: 1.12rem;
+  line-height: 1.7;
+}
+
+/* Card do simulador */
+.simulator-card {
+  padding: 30px;
+  border-radius: 28px;
+  background: var(--bg-card);
+  color: var(--text-dark);
+  box-shadow: var(--shadow);
+}
+
+/* Cabeçalho do card */
+.card-header {
+  margin-bottom: 24px;
+}
+
+/* Título do card */
+.card-header h2 {
+  margin-bottom: 8px;
+  font-size: 1.6rem;
+}
+
+/* Texto pequeno do card */
+.card-header p {
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* Formulário */
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+/* Grupo de label + input */
+.form-group {
+  display: grid;
+  gap: 8px;
+}
+
+/* Texto do label */
+.form-group span {
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+/* Campo de entrada */
+.form-group input {
+  width: 100%;
+  padding: 14px 15px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  font-size: 1rem;
+  color: var(--text-dark);
+  background: #ffffff;
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Efeito ao clicar no input */
+.form-group input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(47, 128, 237, 0.14);
+}
+
+/* Botão calcular */
+.calculate-button {
+  margin-top: 6px;
+  padding: 15px 18px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Efeito do botão ao passar o mouse */
+.calculate-button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(47, 128, 237, 0.28);
+}
+
+/* Efeito ao clicar */
+.calculate-button:active {
+  transform: translateY(0);
+}
+
+/* Mensagem de erro */
+.error-message {
+  min-height: 22px;
+  color: var(--danger);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* Área dos resultados */
+.result-area {
+  margin-top: 26px;
+  display: grid;
+  gap: 14px;
+}
+
+/* Classe usada pelo JavaScript para esconder o resultado */
+.hidden {
+  display: none;
+}
+
+/* Cada card de resultado */
+.result-box {
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--soft-bg);
+  border: 1px solid #e6ebf3;
+}
+
+/* Texto pequeno do resultado */
+.result-box span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+/* Valor principal do resultado */
+.result-box strong {
+  color: var(--text-dark);
+  font-size: 1.35rem;
+}
+
+/* Texto final de resumo */
+.result-summary {
+  margin-top: 8px;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(21, 163, 109, 0.10);
+  color: #126b49;
+  line-height: 1.6;
+  font-weight: 700;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 900px) {
+  .page {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .hero {
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .simulator-card {
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+/* Ajuste para celulares pequenos */
+@media (max-width: 480px) {
+  .page {
+    width: 94%;
+    padding: 30px 0;
+  }
+
+  .simulator-card {
+    padding: 22px;
+    border-radius: 22px;
+  }
+
+  .hero h1 {
+    font-size: 2.6rem;
+  }
+}
