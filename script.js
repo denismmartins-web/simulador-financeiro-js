@@ -7,14 +7,18 @@ const initialValueInput = document.querySelector("#initial-value");
 const monthlyContributionInput = document.querySelector("#monthly-contribution");
 const monthlyRateInput = document.querySelector("#monthly-rate");
 const monthsInput = document.querySelector("#months");
+const taxModeInput = document.querySelector("#tax-mode");
 
 // Busca a área onde os resultados serão exibidos.
 const resultArea = document.querySelector("#result-area");
 
 // Busca os elementos específicos onde cada resultado será escrito.
-const finalValueElement = document.querySelector("#final-value");
+const grossFinalValueElement = document.querySelector("#gross-final-value");
+const netFinalValueElement = document.querySelector("#net-final-value");
 const totalInvestedElement = document.querySelector("#total-invested");
-const totalInterestElement = document.querySelector("#total-interest");
+const grossInterestElement = document.querySelector("#gross-interest");
+const taxRateElement = document.querySelector("#tax-rate");
+const taxValueElement = document.querySelector("#tax-value");
 const resultSummaryElement = document.querySelector("#result-summary");
 
 // Busca o elemento de mensagem de erro.
@@ -38,7 +42,7 @@ function getNumberFromInput(input) {
 // Função que valida os dados antes de calcular.
 // Ela retorna uma mensagem de erro ou uma string vazia se estiver tudo certo.
 function validateFields(initialValue, monthlyContribution, monthlyRate, months) {
-  // Verifica se todos os valores estão zerados.
+  // Verifica se valor inicial e aporte estão zerados.
   if (initialValue <= 0 && monthlyContribution <= 0) {
     return "Informe um valor inicial ou um aporte mensal maior que zero.";
   }
@@ -57,10 +61,40 @@ function validateFields(initialValue, monthlyContribution, monthlyRate, months) 
   return "";
 }
 
+// Função que descobre a alíquota de IR de acordo com o prazo.
+// Para simplificar o estudo, estamos estimando 1 mês como 30 dias.
+function getIncomeTaxRate(months) {
+  // Converte meses em dias estimados.
+  const estimatedDays = months * 30;
+
+  // Até 180 dias: 22,5%.
+  if (estimatedDays <= 180) {
+    return 22.5;
+  }
+
+  // De 181 até 360 dias: 20%.
+  if (estimatedDays <= 360) {
+    return 20;
+  }
+
+  // De 361 até 720 dias: 17,5%.
+  if (estimatedDays <= 720) {
+    return 17.5;
+  }
+
+  // Acima de 720 dias: 15%.
+  return 15;
+}
+
 // Função principal responsável por calcular a simulação.
-// A lógica considera que o rendimento acontece mês a mês,
-// e o aporte mensal entra ao final de cada mês.
-function calculateSimulation(initialValue, monthlyContribution, monthlyRate, months) {
+// A lógica considera rendimento mês a mês e aporte ao final de cada mês.
+function calculateSimulation(
+  initialValue,
+  monthlyContribution,
+  monthlyRate,
+  months,
+  taxMode
+) {
   // Converte a taxa percentual em taxa decimal.
   // Exemplo: 1% vira 0.01.
   const monthlyRateDecimal = monthlyRate / 100;
@@ -80,30 +114,59 @@ function calculateSimulation(initialValue, monthlyContribution, monthlyRate, mon
   // Calcula o total de dinheiro colocado pelo usuário.
   const totalInvested = initialValue + monthlyContribution * months;
 
-  // Calcula quanto veio apenas de rendimento.
-  const totalInterest = balance - totalInvested;
+  // Calcula o rendimento bruto.
+  const grossInterest = balance - totalInvested;
+
+  // Verifica se o usuário escolheu aplicar IR.
+  const shouldApplyTax = taxMode === "with-tax";
+
+  // Descobre a alíquota de IR pela tabela regressiva.
+  const taxRate = shouldApplyTax ? getIncomeTaxRate(months) : 0;
+
+  // Calcula o imposto somente sobre o rendimento positivo.
+  // Se não houve lucro, não aplicamos imposto.
+  const taxValue = grossInterest > 0 ? grossInterest * (taxRate / 100) : 0;
+
+  // Calcula o valor final líquido.
+  const netFinalValue = balance - taxValue;
 
   // Retorna os resultados em formato de objeto.
   return {
-    finalValue: balance,
+    grossFinalValue: balance,
+    netFinalValue: netFinalValue,
     totalInvested: totalInvested,
-    totalInterest: totalInterest,
+    grossInterest: grossInterest,
+    taxRate: taxRate,
+    taxValue: taxValue,
   };
 }
 
 // Função que exibe os resultados na tela.
-function showResults(finalValue, totalInvested, totalInterest, months) {
-  // Escreve o valor final formatado.
-  finalValueElement.textContent = formatCurrency(finalValue);
+function showResults(simulation, months, taxMode) {
+  // Escreve o valor final bruto formatado.
+  grossFinalValueElement.textContent = formatCurrency(simulation.grossFinalValue);
+
+  // Escreve o valor final líquido formatado.
+  netFinalValueElement.textContent = formatCurrency(simulation.netFinalValue);
 
   // Escreve o total investido formatado.
-  totalInvestedElement.textContent = formatCurrency(totalInvested);
+  totalInvestedElement.textContent = formatCurrency(simulation.totalInvested);
 
-  // Escreve o rendimento estimado formatado.
-  totalInterestElement.textContent = formatCurrency(totalInterest);
+  // Escreve o rendimento bruto formatado.
+  grossInterestElement.textContent = formatCurrency(simulation.grossInterest);
 
-  // Escreve uma frase de resumo da simulação.
-  resultSummaryElement.textContent = `Em ${months} meses, seu investimento pode chegar a ${formatCurrency(finalValue)}, com rendimento estimado de ${formatCurrency(totalInterest)}.`;
+  // Escreve a alíquota de IR.
+  taxRateElement.textContent = `${simulation.taxRate.toFixed(1).replace(".", ",")}%`;
+
+  // Escreve o valor estimado de IR.
+  taxValueElement.textContent = formatCurrency(simulation.taxValue);
+
+  // Monta o texto de explicação com base no tipo de tributação.
+  if (taxMode === "with-tax") {
+    resultSummaryElement.textContent = `Em ${months} meses, o valor bruto estimado é ${formatCurrency(simulation.grossFinalValue)}. Após IR estimado de ${formatCurrency(simulation.taxValue)}, o valor líquido seria ${formatCurrency(simulation.netFinalValue)}.`;
+  } else {
+    resultSummaryElement.textContent = `Em ${months} meses, o valor final estimado é ${formatCurrency(simulation.netFinalValue)}. Nesta simulação, o imposto de renda não foi aplicado.`;
+  }
 
   // Remove a classe hidden para mostrar a área de resultados.
   resultArea.classList.remove("hidden");
@@ -122,6 +185,7 @@ if (simulatorForm) {
     const monthlyContribution = getNumberFromInput(monthlyContributionInput);
     const monthlyRate = getNumberFromInput(monthlyRateInput);
     const months = getNumberFromInput(monthsInput);
+    const taxMode = taxModeInput.value;
 
     // Valida os campos antes de calcular.
     const errorMessage = validateFields(
@@ -146,15 +210,11 @@ if (simulatorForm) {
       initialValue,
       monthlyContribution,
       monthlyRate,
-      months
+      months,
+      taxMode
     );
 
     // Exibe os resultados na tela.
-    showResults(
-      simulation.finalValue,
-      simulation.totalInvested,
-      simulation.totalInterest,
-      months
-    );
+    showResults(simulation, months, taxMode);
   });
 }
