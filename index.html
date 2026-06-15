@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!-- Define que este documento usa HTML5 -->
+
+<html lang="pt-BR">
+<!-- Define o idioma principal da página como português do Brasil -->
+
+<head>
+  <!-- Permite acentos e caracteres especiais -->
+  <meta charset="UTF-8" />
+
+  <!-- Faz a página se adaptar a celular, tablet e computador -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Título que aparece na aba do navegador -->
+  <title>Simulador Financeiro JS</title>
+
+  <!-- Importa o arquivo CSS externo -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Importa o JavaScript com defer para carregar depois do HTML -->
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <!-- Área principal da página -->
+  <main class="page">
+
+    <!-- Seção de apresentação do projeto -->
+    <section class="hero">
+      <p class="hero__tag">Projeto JavaScript • GitHub Pages</p>
+
+      <h1>Simulador Financeiro</h1>
+
+      <p>
+        Calcule uma estimativa de crescimento do seu investimento com valor inicial,
+        aporte mensal, taxa de rendimento e tempo.
+      </p>
+    </section>
+
+    <!-- Card principal do simulador -->
+    <section class="simulator-card">
+
+      <!-- Cabeçalho do card -->
+      <header class="card-header">
+        <h2>Dados da simulação</h2>
+        <p>Preencha os campos abaixo para calcular o resultado estimado.</p>
+      </header>
+
+      <!-- Formulário do simulador -->
+      <form id="simulator-form" class="form">
+
+        <!-- Campo de valor inicial -->
+        <label class="form-group" for="initial-value">
+          <span>Valor inicial</span>
+          <input
+            type="number"
+            id="initial-value"
+            placeholder="Ex: 1000"
+            min="0"
+            step="0.01"
+          />
+        </label>
+
+        <!-- Campo de aporte mensal -->
+        <label class="form-group" for="monthly-contribution">
+          <span>Aporte mensal</span>
+          <input
+            type="number"
+            id="monthly-contribution"
+            placeholder="Ex: 300"
+            min="0"
+            step="0.01"
+          />
+        </label>
+
+        <!-- Campo de taxa mensal -->
+        <label class="form-group" for="monthly-rate">
+          <span>Taxa mensal (%)</span>
+          <input
+            type="number"
+            id="monthly-rate"
+            placeholder="Ex: 0.8"
+            min="0"
+            step="0.01"
+          />
+        </label>
+
+        <!-- Campo de tempo -->
+        <label class="form-group" for="months">
+          <span>Tempo em meses</span>
+          <input
+            type="number"
+            id="months"
+            placeholder="Ex: 24"
+            min="1"
+            step="1"
+          />
+        </label>
+
+        <!-- Botão de cálculo -->
+        <button type="submit" class="calculate-button">
+          Calcular simulação
+        </button>
+
+        <!-- Mensagem de erro/aviso -->
+        <p id="error-message" class="error-message"></p>
+      </form>
+
+      <!-- Área de resultados -->
+      <section id="result-area" class="result-area hidden">
+
+        <!-- Card do valor final -->
+        <article class="result-box">
+          <span>Valor final estimado</span>
+          <strong id="final-value">R$ 0,00</strong>
+        </article>
+
+        <!-- Card do total investido -->
+        <article class="result-box">
+          <span>Total investido</span>
+          <strong id="total-invested">R$ 0,00</strong>
+        </article>
+
+        <!-- Card dos rendimentos -->
+        <article class="result-box">
+          <span>Rendimento estimado</span>
+          <strong id="total-interest">R$ 0,00</strong>
+        </article>
+
+        <!-- Texto explicativo do resultado -->
+        <p id="result-summary" class="result-summary"></p>
+      </section>
+    </section>
+  </main>
+</body>
+</html>
