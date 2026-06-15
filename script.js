@@ -9,6 +9,10 @@ const monthlyRateInput = document.querySelector("#monthly-rate");
 const monthsInput = document.querySelector("#months");
 const taxModeInput = document.querySelector("#tax-mode");
 
+// Busca o botão e a mensagem da API Selic.
+const fetchSelicButton = document.querySelector("#fetch-selic-button");
+const selicInfoElement = document.querySelector("#selic-info");
+
 // Busca a área onde os resultados serão exibidos.
 const resultArea = document.querySelector("#result-area");
 
@@ -37,6 +41,16 @@ function formatCurrency(value) {
 // Se o campo estiver vazio, retorna 0.
 function getNumberFromInput(input) {
   return Number(input.value) || 0;
+}
+
+// Função que formata uma data no padrão dd/MM/aaaa.
+// A API do Banco Central usa esse formato nos filtros de data.
+function formatDateToBrazilianPattern(date) {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
 }
 
 // Função que valida os dados antes de calcular.
@@ -170,6 +184,81 @@ function showResults(simulation, months, taxMode) {
 
   // Remove a classe hidden para mostrar a área de resultados.
   resultArea.classList.remove("hidden");
+}
+
+// Função assíncrona que busca a taxa Selic acumulada no mês pela API do Banco Central.
+async function fetchLatestSelicMonthlyRate() {
+  // Define que estamos buscando os últimos 12 meses.
+  // Isso evita pedir uma série histórica grande demais.
+  const finalDate = new Date();
+  const initialDate = new Date();
+
+  // Volta 12 meses a partir da data atual.
+  initialDate.setMonth(initialDate.getMonth() - 12);
+
+  // Formata as datas no padrão usado pela API.
+  const startDate = formatDateToBrazilianPattern(initialDate);
+  const endDate = formatDateToBrazilianPattern(finalDate);
+
+  // Monta a URL da API.
+  // Série 4390 = Selic acumulada no mês.
+  const apiUrl = `https://api.bcb.gov.br/dados/serie/bcdata.sgs.4390/dados?formato=json&dataInicial=${startDate}&dataFinal=${endDate}`;
+
+  // Altera o visual do botão enquanto busca.
+  fetchSelicButton.disabled = true;
+  fetchSelicButton.textContent = "Buscando Selic...";
+  selicInfoElement.textContent = "Consultando dados do Banco Central...";
+
+  try {
+    // Faz a requisição para a API.
+    const response = await fetch(apiUrl);
+
+    // Se a resposta não for boa, gera erro.
+    if (!response.ok) {
+      throw new Error("Resposta inválida da API.");
+    }
+
+    // Converte a resposta em JSON.
+    const data = await response.json();
+
+    // Verifica se veio uma lista válida.
+    if (!Array.isArray(data) || data.length === 0) {
+      throw new Error("A API não retornou dados de Selic.");
+    }
+
+    // Pega o último registro disponível.
+    const latestSelic = data[data.length - 1];
+
+    // Converte o valor retornado pela API em número.
+    const selicRate = Number(String(latestSelic.valor).replace(",", "."));
+
+    // Verifica se o valor convertido é válido.
+    if (Number.isNaN(selicRate)) {
+      throw new Error("Valor da Selic não pôde ser convertido.");
+    }
+
+    // Preenche o campo de taxa mensal com a Selic encontrada.
+    monthlyRateInput.value = selicRate.toFixed(2);
+
+    // Mostra uma mensagem amigável para o usuário.
+    selicInfoElement.textContent = `Selic mensal carregada: ${selicRate.toFixed(2).replace(".", ",")}% (${latestSelic.data}).`;
+
+  } catch (error) {
+    // Se algo falhar, mostramos uma mensagem e mantemos o preenchimento manual.
+    selicInfoElement.textContent = "Não foi possível buscar a Selic agora. Preencha a taxa manualmente.";
+    console.error("Erro ao buscar Selic:", error);
+
+  } finally {
+    // Independentemente de sucesso ou erro, o botão volta ao normal.
+    fetchSelicButton.disabled = false;
+    fetchSelicButton.textContent = "Buscar Selic mensal";
+  }
+}
+
+// Verifica se o botão da API existe antes de adicionar o evento.
+if (fetchSelicButton) {
+  // Quando clicar no botão, busca a Selic pela API.
+  fetchSelicButton.addEventListener("click", fetchLatestSelicMonthlyRate);
 }
 
 // Verifica se o formulário existe antes de adicionar o evento.
