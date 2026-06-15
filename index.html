@@ -27,13 +27,13 @@
 
     <!-- Seção de apresentação do projeto -->
     <section class="hero">
-      <p class="hero__tag">Projeto JavaScript • GitHub Pages</p>
+      <p class="hero__tag">Projeto JavaScript • Renda Fixa</p>
 
-      <h1>Simulador Financeiro</h1>
+      <h1>Simulador de Renda Fixa</h1>
 
       <p>
-        Calcule uma estimativa de crescimento do seu investimento com valor inicial,
-        aporte mensal, taxa de rendimento e tempo.
+        Calcule uma estimativa de crescimento do investimento com aportes mensais,
+        rendimento mensal e imposto de renda sobre o lucro.
       </p>
     </section>
 
@@ -43,7 +43,9 @@
       <!-- Cabeçalho do card -->
       <header class="card-header">
         <h2>Dados da simulação</h2>
-        <p>Preencha os campos abaixo para calcular o resultado estimado.</p>
+        <p>
+          Preencha os campos para calcular valor bruto, imposto estimado e valor líquido.
+        </p>
       </header>
 
       <!-- Formulário do simulador -->
@@ -75,7 +77,7 @@
 
         <!-- Campo de taxa mensal -->
         <label class="form-group" for="monthly-rate">
-          <span>Taxa mensal (%)</span>
+          <span>Taxa mensal estimada (%)</span>
           <input
             type="number"
             id="monthly-rate"
@@ -97,9 +99,19 @@
           />
         </label>
 
+        <!-- Campo para escolher se aplica IR -->
+        <label class="form-group" for="tax-mode">
+          <span>Tipo de tributação</span>
+
+          <select id="tax-mode">
+            <option value="with-tax">Com IR sobre rendimento</option>
+            <option value="without-tax">Sem IR</option>
+          </select>
+        </label>
+
         <!-- Botão de cálculo -->
         <button type="submit" class="calculate-button">
-          Calcular simulação
+          Calcular renda fixa
         </button>
 
         <!-- Mensagem de erro/aviso -->
@@ -109,10 +121,16 @@
       <!-- Área de resultados -->
       <section id="result-area" class="result-area hidden">
 
-        <!-- Card do valor final -->
-        <article class="result-box">
-          <span>Valor final estimado</span>
-          <strong id="final-value">R$ 0,00</strong>
+        <!-- Card do valor final bruto -->
+        <article class="result-box result-box--highlight">
+          <span>Valor final bruto</span>
+          <strong id="gross-final-value">R$ 0,00</strong>
+        </article>
+
+        <!-- Card do valor final líquido -->
+        <article class="result-box result-box--success">
+          <span>Valor final líquido</span>
+          <strong id="net-final-value">R$ 0,00</strong>
         </article>
 
         <!-- Card do total investido -->
@@ -121,10 +139,22 @@
           <strong id="total-invested">R$ 0,00</strong>
         </article>
 
-        <!-- Card dos rendimentos -->
+        <!-- Card do rendimento bruto -->
         <article class="result-box">
-          <span>Rendimento estimado</span>
-          <strong id="total-interest">R$ 0,00</strong>
+          <span>Rendimento bruto</span>
+          <strong id="gross-interest">R$ 0,00</strong>
+        </article>
+
+        <!-- Card da alíquota de IR -->
+        <article class="result-box">
+          <span>Alíquota de IR aplicada</span>
+          <strong id="tax-rate">0%</strong>
+        </article>
+
+        <!-- Card do valor de IR -->
+        <article class="result-box">
+          <span>IR estimado sobre lucro</span>
+          <strong id="tax-value">R$ 0,00</strong>
         </article>
 
         <!-- Texto explicativo do resultado -->
