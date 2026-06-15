@@ -27,13 +27,13 @@
 
     <!-- Seção de apresentação do projeto -->
     <section class="hero">
-      <p class="hero__tag">Projeto JavaScript • Renda Fixa</p>
+      <p class="hero__tag">Projeto JavaScript • API Selic</p>
 
       <h1>Simulador de Renda Fixa</h1>
 
       <p>
         Calcule uma estimativa de crescimento do investimento com aportes mensais,
-        rendimento mensal e imposto de renda sobre o lucro.
+        rendimento mensal, imposto de renda e taxa Selic buscada por API.
       </p>
     </section>
 
@@ -44,7 +44,7 @@
       <header class="card-header">
         <h2>Dados da simulação</h2>
         <p>
-          Preencha os campos para calcular valor bruto, imposto estimado e valor líquido.
+          Preencha os campos ou busque a taxa Selic mensal pela API do Banco Central.
         </p>
       </header>
 
@@ -86,6 +86,16 @@
             step="0.01"
           />
         </label>
+
+        <!-- Botão que busca a taxa Selic pela API -->
+        <button type="button" id="fetch-selic-button" class="secondary-button">
+          Buscar Selic mensal
+        </button>
+
+        <!-- Mensagem da API -->
+        <p id="selic-info" class="api-message">
+          A taxa também pode ser preenchida manualmente.
+        </p>
 
         <!-- Campo de tempo -->
         <label class="form-group" for="months">
