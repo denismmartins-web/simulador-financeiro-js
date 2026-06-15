@@ -128,9 +128,28 @@ body {
   border-radius: 14px;
   font-size: 1rem;
   color: var(--text-dark);
-  background: #ffffff;
+  background-color: #ffffff;
   outline: none;
   transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Padroniza melhor o select entre navegadores */
+.form-group select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) 50%,
+    calc(100% - 14px) 50%;
+  background-size:
+    6px 6px,
+    6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 42px;
 }
 
 /* Efeito ao clicar no input/select */
@@ -164,6 +183,42 @@ body {
 /* Efeito ao clicar */
 .calculate-button:active {
   transform: translateY(0);
+}
+
+/* Botão secundário usado para buscar API */
+.secondary-button {
+  padding: 13px 16px;
+  border: 1px solid rgba(47, 128, 237, 0.28);
+  border-radius: 16px;
+  background: rgba(47, 128, 237, 0.10);
+  color: var(--primary-dark);
+  font-size: 0.98rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Efeito no botão secundário */
+.secondary-button:hover {
+  transform: translateY(-2px);
+  background: rgba(47, 128, 237, 0.16);
+  box-shadow: 0 10px 22px rgba(47, 128, 237, 0.14);
+}
+
+/* Estado visual enquanto busca API */
+.secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Mensagem pequena da API */
+.api-message {
+  min-height: 22px;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.4;
 }
 
 /* Mensagem de erro */
