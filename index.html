@@ -22,6 +22,11 @@
 </head>
 
 <body>
+  <!-- Contador fixo de visualizações da página -->
+  <div class="floating-view-counter" title="Visualizações da página">
+    <strong id="view-counter">---</strong>
+  </div>
+
   <!-- Área principal da página -->
   <main class="page">
 
@@ -29,11 +34,13 @@
     <section class="hero">
       <p class="hero__tag">Projeto JavaScript • API Selic</p>
 
-      <h1> Sɪᴍᴜʟᴀᴅᴏʀ ᴅᴇ Rᴇɴᴅᴀ Fɪxᴀ 💸</h1>
+      <h1>Sɪᴍᴜʟᴀᴅᴏʀ ᴅᴇ Rᴇɴᴅᴀ Fɪxᴀ 💸</h1>
+
       <p>
         Calcule uma estimativa de crescimento do investimento com aportes mensais,
         rendimento mensal, imposto de renda e taxa Selic buscada por API.
       </p>
+
       <!-- Blocos educativos sobre renda fixa -->
       <section class="education-cards" aria-label="Informações educativas sobre renda fixa">
 
@@ -42,22 +49,24 @@
           <div class="edu-card__top">
             <h2>• O ǫᴜᴇ ᴇ́ ʀᴇɴᴅᴀ ғɪxᴀ?</h2>
           </div>
+
           <div class="edu-card__middle">
             <p>
-
-              É quando você <span class="edu-highlight">empresta dinheiro</span> ao governo ou
-            <p>a uma instituição e o recebe de volta com o acréscimo de juros.</p>
+              É quando você <span class="edu-highlight">empresta dinheiro</span> ao governo
+              ou a uma instituição e o recebe de volta com o acréscimo de juros.
             </p>
           </div>
 
           <div class="edu-card__bottom">
             <p class="edu-card__strong">
-              <span class="edu-highlight">Prefixados</span> ou <span class="edu-highlight">pós-fixados</span>, esses
-              juros definem o retorno da renda fixa, disponível para prazos fechados ou com liquidez diária.
+              <span class="edu-highlight">Prefixados</span> ou
+              <span class="edu-highlight">pós-fixados</span>, esses juros definem o retorno da
+              renda fixa, disponível para prazos fechados ou com liquidez diária.
             </p>
 
-            Ou seja, você já tem uma boa noção de quanto vai receber lá na frente.
-           
+            <p>
+              Ou seja, você já tem uma boa noção de quanto vai receber lá na frente.
+            </p>
           </div>
         </article>
 
@@ -65,13 +74,20 @@
         <article class="edu-card edu-card--secondary">
           <div class="edu-card__inline">
             <div class="edu-icon" aria-hidden="true">
-              <!-- Ícone em SVG feito em código -->
+              <!-- Ícone SVG feito direto no HTML -->
               <svg viewBox="0 0 64 64" role="img" aria-label="Ícone de gráfico">
                 <rect x="6" y="30" width="8" height="24" rx="2"></rect>
                 <rect x="20" y="22" width="8" height="32" rx="2"></rect>
                 <rect x="34" y="14" width="8" height="40" rx="2"></rect>
-                <path d="M8 20 L22 12 L36 18 L52 8" fill="none" stroke-width="4" stroke-linecap="round"
-                  stroke-linejoin="round"></path>
+
+                <path
+                  d="M8 20 L22 12 L36 18 L52 8"
+                  fill="none"
+                  stroke-width="4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+
                 <circle cx="8" cy="20" r="3"></circle>
                 <circle cx="22" cy="12" r="3"></circle>
                 <circle cx="36" cy="18" r="3"></circle>
@@ -81,6 +97,7 @@
 
             <div class="edu-card__content">
               <h3>Pós-fixado</h3>
+
               <p>
                 O retorno varia de acordo com um índice
                 <span>(tipo Selic ou CDI).</span>
@@ -97,8 +114,9 @@
       <!-- Cabeçalho do card -->
       <header class="card-header">
         <h2>Simulador de Renda Pós-Fixado</h2>
+
         <p>
-          Preencha os campos e busque a taxa Selic mensal pela API do Banco Central.
+          Preencha os campos ou busque a Meta Selic pela API do Banco Central.
         </p>
       </header>
 
@@ -108,24 +126,46 @@
         <!-- Campo de valor inicial -->
         <label class="form-group" for="initial-value">
           <span>Valor inicial</span>
-          <input type="number" id="initial-value" placeholder=" R$1000,00" min="0" step="0.01" />
+
+          <input
+            type="number"
+            id="initial-value"
+            placeholder="R$ 1000,00"
+            min="0"
+            step="0.01"
+          />
         </label>
 
         <!-- Campo de aporte mensal -->
         <label class="form-group" for="monthly-contribution">
           <span>Aporte mensal</span>
-          <input type="number" id="monthly-contribution" placeholder="R$300,00" min="0" step="0.01" />
+
+          <input
+            type="number"
+            id="monthly-contribution"
+            placeholder="R$ 300,00"
+            min="0"
+            step="0.01"
+          />
         </label>
 
         <!-- Campo de taxa mensal -->
         <label class="form-group" for="monthly-rate">
           <span>Taxa mensal usada no cálculo (%)</span>
-          <input type="number" id="monthly-rate" placeholder="0.8" min="0" step="0.01" />
+
+          <input
+            type="number"
+            id="monthly-rate"
+            placeholder="0.8"
+            min="0"
+            step="0.01"
+          />
 
           <!-- Texto auxiliar que mostra a taxa anual equivalente -->
           <small id="annual-rate-helper" class="field-helper"></small>
         </label>
 
+        <!-- Botão que busca a Meta Selic pela API -->
         <button type="button" id="fetch-selic-button" class="secondary-button">
           Buscar Selic
         </button>
@@ -138,7 +178,14 @@
         <!-- Campo de tempo -->
         <label class="form-group" for="months">
           <span>Tempo em meses</span>
-          <input type="number" id="months" placeholder="24 Meses" min="1" step="1" />
+
+          <input
+            type="number"
+            id="months"
+            placeholder="24 meses"
+            min="1"
+            step="1"
+          />
 
           <!-- Texto auxiliar que converte meses em anos -->
           <small id="months-helper" class="field-helper"></small>
@@ -153,10 +200,8 @@
             <option value="without-tax">Sem IR</option>
           </select>
 
-          <!-- Texto auxiliar explicando o impacto do IR -->
-          <small id="tax-helper" class="field-helper">
-            Aplica imposto estimado apenas sobre o rendimento.
-          </small>
+          <!-- Texto auxiliar controlado pelo JavaScript -->
+          <small id="tax-helper" class="field-helper"></small>
         </label>
 
         <!-- Botão de cálculo -->
@@ -170,46 +215,6 @@
 
       <!-- Área de resultados -->
       <section id="result-area" class="result-area hidden">
-
-        <!-- Tabela informativa de alíquota de IR -->
-        <div id="tax-table-card" class="tax-table-card hidden">
-          <h3>Tabela regressiva de IR</h3>
-
-          <p>
-            O imposto é estimado sobre o rendimento bruto, conforme o prazo da aplicação.
-          </p>
-
-          <table class="tax-table">
-            <thead>
-              <tr>
-                <th>Prazo</th>
-                <th>Alíquota</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr data-tax-range="up-to-180">
-                <td>Até 180 dias</td>
-                <td>22,5%</td>
-              </tr>
-
-              <tr data-tax-range="up-to-360">
-                <td>181 a 360 dias</td>
-                <td>20%</td>
-              </tr>
-
-              <tr data-tax-range="up-to-720">
-                <td>361 a 720 dias</td>
-                <td>17,5%</td>
-              </tr>
-
-              <tr data-tax-range="above-720">
-                <td>Acima de 720 dias</td>
-                <td>15%</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
 
         <!-- Card do valor final bruto -->
         <article class="result-box result-box--highlight" title="Valor antes do desconto de imposto.">
@@ -252,68 +257,58 @@
 
         <!-- Guias informativos abaixo do resultado -->
         <div class="info-notes">
-          <!-- Texto explicativo do resultado -->
-          <p id="result-summary" class="result-summary"></p>
+          <p>
+            <strong>Selic:</strong>
+            A taxa buscada pela API serve como referência para a simulação.
+          </p>
 
-          <!-- Guias informativos abaixo do resultado -->
-          <div class="info-notes">
-            <p>
-              <strong>Selic:</strong>
-              A taxa buscada pela API serve como referência para a simulação.
-            </p>
-
-            <p id="tax-info-note">
-              <strong>IR:</strong>
-              quando ativado, o imposto é estimado somente sobre o rendimento bruto.
-            </p>
-          </div>
-
-          <!-- Tabela informativa de alíquota de IR -->
-          <div class="tax-table-card">
-            <h3>Tabela regressiva de IR</h3>
-
-            <p>
-              O imposto é estimado sobre o rendimento bruto, conforme o prazo da aplicação.
-            </p>
-
-            <table class="tax-table">
-              <thead>
-                <tr>
-                  <th>Prazo</th>
-                  <th>Alíquota</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr data-tax-range="up-to-180">
-                  <td>Até 180 dias</td>
-                  <td>22,5%</td>
-                </tr>
-
-                <tr data-tax-range="up-to-360">
-                  <td>181 a 360 dias</td>
-                  <td>20%</td>
-                </tr>
-
-                <tr data-tax-range="up-to-720">
-                  <td>361 a 720 dias</td>
-                  <td>17,5%</td>
-                </tr>
-
-                <tr data-tax-range="above-720">
-                  <td>Acima de 720 dias</td>
-                  <td>15%</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <p id="tax-info-note">
+            <strong>IR:</strong>
+            quando ativado, o imposto é estimado somente sobre o rendimento bruto.
+          </p>
         </div>
 
+        <!-- Tabela informativa de alíquota de IR -->
+        <div class="tax-table-card">
+          <h3>Tabela regressiva de IR</h3>
 
+          <p>
+            O imposto é estimado sobre o rendimento bruto, conforme o prazo da aplicação.
+          </p>
 
+          <table class="tax-table">
+            <thead>
+              <tr>
+                <th>Prazo</th>
+                <th>Alíquota</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr data-tax-range="up-to-180">
+                <td>Até 180 dias</td>
+                <td>22,5%</td>
+              </tr>
+
+              <tr data-tax-range="up-to-360">
+                <td>181 a 360 dias</td>
+                <td>20%</td>
+              </tr>
+
+              <tr data-tax-range="up-to-720">
+                <td>361 a 720 dias</td>
+                <td>17,5%</td>
+              </tr>
+
+              <tr data-tax-range="above-720">
+                <td>Acima de 720 dias</td>
+                <td>15%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
     </section>
   </main>
 </body>
-
 </html>
