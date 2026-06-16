@@ -41,12 +41,10 @@ const taxTableRows = document.querySelectorAll("[data-tax-range]");
 const errorMessageElement = document.querySelector("#error-message");
 
 // Configurações do contador de visualizações.
-// namespace = identifica o domínio/projeto.
-// action = tipo de evento contado.
-// key = nome único da página/projeto.
-const COUNTER_NAMESPACE = "denismmartins-web.github.io";
-const COUNTER_ACTION = "view";
-const COUNTER_KEY = "simulador-financeiro-js";
+// namespace = identifica o projeto no serviço da API.
+// key = identifica qual contador será incrementado.
+const COUNTER_NAMESPACE = "denismmartins-web";
+const COUNTER_KEY = "simulador-financeiro-js-page-views";
 
 // Chave usada para guardar o último valor válido no navegador.
 // Isso não substitui a API; é apenas um fallback visual se a API falhar.
@@ -394,38 +392,55 @@ async function fetchLatestSelicMonthlyRate() {
 // No site publicado, ela incrementa o contador pela API.
 // No Live Server/localhost, ela não incrementa para evitar inflar as visitas durante testes.
 async function updateViewCounter() {
+  // Se o elemento do contador não existir no HTML, a função para aqui.
   if (!viewCounterElement) {
     return;
   }
 
+  // Verifica se a página está rodando no GitHub Pages publicado.
   const isProductionPage =
     window.location.hostname === "denismmartins-web.github.io";
 
+  // Se estiver no Live Server/localhost, mostra apenas "---".
   if (!isProductionPage) {
     viewCounterElement.textContent = "---";
     return;
   }
 
+  // URL correta da CounterAPI V1.
+  // Esse endpoint incrementa +1 visualização e retorna o valor atualizado.
   const counterApiUrl =
-    `https://counterapi.com/api/${COUNTER_NAMESPACE}/${COUNTER_ACTION}/${COUNTER_KEY}`;
+    `https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/up`;
 
   try {
+    // Chama a API do contador.
     const response = await fetch(counterApiUrl);
 
+    // Se a resposta HTTP não for válida, gera erro.
     if (!response.ok) {
       throw new Error("Resposta inválida da API de contador.");
     }
 
+    // Converte a resposta em JSON.
     const data = await response.json();
-    const apiCount = Number(data.value);
 
+    // Tenta pegar o valor retornado pela API.
+    // Deixei flexível para evitar erro se a API retornar o número em outro campo.
+    const apiCount = Number(data.value ?? data.count ?? data.data?.value);
+
+    // Se o valor não for válido, tratamos como falha.
     if (Number.isNaN(apiCount) || apiCount <= 0) {
       throw new Error("A API retornou um contador inválido.");
     }
 
+    // Salva o último valor válido no navegador.
     saveLastViewCount(apiCount);
+
+    // Mostra o valor real vindo da API no contador.
     viewCounterElement.textContent = formatViewCount(apiCount);
+
   } catch (error) {
+    // Se a API falhar, usamos o último valor salvo no localStorage como fallback.
     const savedCount = getLastSavedViewCount();
 
     viewCounterElement.textContent = savedCount > 0
